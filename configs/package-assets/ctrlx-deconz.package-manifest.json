@@ -1,0 +1,11 @@
+{
+    "$schema": "https://json-schema.boschrexroth.com/ctrlx-automation/ctrlx-core/apps/package-manifest/package-manifest.v1.schema.json",
+    "id": "ctrlx-deconz",
+    "menus": {
+        "sidebar": [{
+            "id": "ctrlx-deconz.deconz",
+            "title": "Deconz",
+            "link": "http://${hostname}:8086"
+        }]
+    }
+}
