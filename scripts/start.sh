@@ -46,7 +46,7 @@ else
 fi
 
 if [ "$DECONZ_DEVICE" != 0 ]; then
-  DECONZ_OPTS="$DECONZ_OPTS --dev=$DECONZ_DEVICE"
+  DECONZ_OPTS="$DECONZ_OPTS --device=$DECONZ_DEVICE"
 fi
 
 if [ "$DECONZ_UPNP" != 1 ]; then

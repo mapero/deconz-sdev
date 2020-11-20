@@ -73,6 +73,10 @@ apps:
 plugs:
   conbeeii:
     interface: serial-port
+  system-files:
+    interface: system-files
+    read:
+      - /run/udev/data
 
 slots:
   package-assets:
@@ -81,3 +85,9 @@ slots:
     source:
       read:
       - $SNAP/package-assets/${SNAPCRAFT_PROJECT_NAME}
+
+layout:
+  /usr/share/deCONZ/webapp:
+    bind: $SNAP/usr/share/deCONZ/webapp
+  # /usr/bin/GCFFlasher_internal:
+  #   bind-file: $SNAP/usr/bin/GCFFlasher_internal

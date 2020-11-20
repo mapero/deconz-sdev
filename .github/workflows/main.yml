@@ -12,7 +12,8 @@ jobs:
 
       - name: Install Snapcraft
         uses: samuelmeuli/action-snapcraft@v1
+        with:
+          use_lxd: true
+      - name: Build snap
+        run: sg lxd -c 'snapcraft --use-lxd'
 
-      # You can now run Snapcraft shell commands
-      - name: Use Snapcraft
-        run: snapcraft
