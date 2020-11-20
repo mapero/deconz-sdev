@@ -17,6 +17,7 @@ parts:
       snapcraftctl build
       #fix icon path
     stage-packages:
+    - qt5-default
     - curl
     - kmod
     - libcap2-bin
@@ -33,18 +34,27 @@ parts:
     - tigervnc-common
     - xfonts-base
     - xfonts-scalable
+  
   configs:
     source: ./configs
     plugin: dump
     organize:
       'package-assets/*': package-assets/${SNAPCRAFT_PROJECT_NAME}/
+  scripts:
+    source: ./scripts
+    plugin: dump
+    organize:
+      '*': bin/
 
 apps:
   deCONZ:
-    command: usr/bin/deCONZ
+    command: bin/start.sh
     daemon: simple
-    plugs: [network-bind]
+    plugs: [network-bind, network, raw-usb, browser-support]
     environment:
+      LD_LIBRARY_PATH: $SNAP/usr/lib/${SNAPCRAFT_ARCH_TRIPLET}:$LD_LIBRARY_PATH
+      QT_PLUGIN_PATH: $SNAP/usr/lib/${SNAPCRAFT_ARCH_TRIPLET}/qt5/plugins
+      #QT_DEBUG_PLUGINS: 1
       DEBIAN_FRONTEND: noninteractive
       DECONZ_WEB_PORT: 8087
       DECONZ_WS_PORT: 8088
@@ -53,12 +63,16 @@ apps:
       DEBUG_ZCL: 0
       DEBUG_ZDP: 0
       DEBUG_OTAU: 0
-      DECONZ_DEVICE: 0
+      DECONZ_DEVICE: /dev/ttyACM0
       DECONZ_VNC_MODE: 0
       DECONZ_VNC_DISPLAY: 0
       DECONZ_VNC_PASSWORD: changeme
       DECONZ_VNC_PORT: 5900
       DECONZ_UPNP: 1
+
+plugs:
+  conbeeii:
+    interface: serial-port
 
 slots:
   package-assets:

@@ -1,0 +1,56 @@
+#!/bin/sh
+
+echo "Starting deCONZ..."
+echo "Current deCONZ version: $DECONZ_VERSION"
+echo "Web UI port: $DECONZ_WEB_PORT"
+echo "Websockets port: $DECONZ_WS_PORT"
+
+DECONZ_OPTS="--auto-connect=1 \
+        --dbg-info=$DEBUG_INFO \
+        --dbg-aps=$DEBUG_APS \
+        --dbg-zcl=$DEBUG_ZCL \
+        --dbg-zdp=$DEBUG_ZDP \
+        --dbg-otau=$DEBUG_OTAU \
+        --http-port=$DECONZ_WEB_PORT \
+        --ws-port=$DECONZ_WS_PORT"
+
+if [ "$DECONZ_VNC_MODE" != 0 ]; then
+  
+  if [ "$DECONZ_VNC_PORT" -lt 5900 ]; then
+    echo "[marthoc/deconz] ERROR - VNC port must be 5900 or greater!"
+    exit 1
+  fi
+
+  DECONZ_VNC_DISPLAY=:$(($DECONZ_VNC_PORT - 5900))
+  echo "[marthoc/deconz] VNC port: $DECONZ_VNC_PORT"
+  
+  if [ ! -e /root/.vnc ]; then
+    mkdir /root/.vnc
+  fi
+  
+  # Set VNC password
+  echo "$DECONZ_VNC_PASSWORD" | tigervncpasswd -f > /root/.vnc/passwd
+  chmod 600 /root/.vnc/passwd
+
+  # Cleanup previous VNC session data
+  tigervncserver -kill "$DECONZ_VNC_DISPLAY"
+
+  # Set VNC security
+  tigervncserver -SecurityTypes VncAuth,TLSVnc "$DECONZ_VNC_DISPLAY"
+  
+  # Export VNC display variable
+  export DISPLAY=$DECONZ_VNC_DISPLAY
+else
+  echo "[marthoc/deconz] VNC Disabled"
+  DECONZ_OPTS="$DECONZ_OPTS -platform minimal"
+fi
+
+if [ "$DECONZ_DEVICE" != 0 ]; then
+  DECONZ_OPTS="$DECONZ_OPTS --dev=$DECONZ_DEVICE"
+fi
+
+if [ "$DECONZ_UPNP" != 1 ]; then
+  DECONZ_OPTS="$DECONZ_OPTS --upnp=0"
+fi
+
+$SNAP/usr/bin/deCONZ $DECONZ_OPTS
