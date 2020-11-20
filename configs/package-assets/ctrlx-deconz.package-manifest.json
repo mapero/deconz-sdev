@@ -5,7 +5,7 @@
         "sidebar": [{
             "id": "ctrlx-deconz.deconz",
             "title": "Deconz",
-            "link": "http://${hostname}:8086"
+            "link": "http://${hostname}:8087"
         }]
     }
 }
