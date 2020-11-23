@@ -3,9 +3,9 @@ base: core18 # the base snap is the execution environment for this snap
 summary: deconz # 79 char long summary
 description: |
   deconz
-version: 2.05.88
 grade: devel # must be 'stable' to release into candidate/stable channels
 confinement: strict # use 'strict' once you have the right plugs and slots
+adopt-info: deconz
 
 parts:
   configs:
@@ -14,9 +14,11 @@ parts:
     organize:
       'package-assets/*': package-assets/${SNAPCRAFT_PROJECT_NAME}/
   deconz:
-    source: http://deconz.dresden-elektronik.de/ubuntu/stable/deconz-2.05.88-qt5.deb
+    source: .
     plugin: dump
     source-type: deb
+    build-packages:
+      - wget
     stage-packages:
     - qt5-default
     - curl
@@ -35,11 +37,12 @@ parts:
     - tigervnc-common
     - xfonts-base
     - xfonts-scalable
-  configs:
-    source: ./configs
-    plugin: dump
-    organize:
-      'package-assets/*': package-assets/${SNAPCRAFT_PROJECT_NAME}/
+    override-pull: |
+      export DECONZ_VERSION=$(cat $SNAPCRAFT_STAGE/VERSION_DECONZ)
+      wget -q -O- http://deconz.dresden-elektronik.de/ubuntu/stable/deconz-2.05.88-qt5.deb | dpkg -x - "$SNAPCRAFT_PART_SRC"
+      snapcraftctl set-version "${DECONZ_VERSION}+$(date +%Y%m%d%H%M%S)"
+    after:
+    - configs
   scripts:
     source: ./scripts
     plugin: dump
@@ -50,7 +53,11 @@ apps:
   deCONZ:
     command: bin/start.sh
     daemon: simple
-    plugs: [network-bind, network, raw-usb, browser-support]
+    plugs: 
+      - network-bind
+      - network
+      - conbeeii
+      - system-observe
     environment:
       LD_LIBRARY_PATH: $SNAP/usr/lib/${SNAPCRAFT_ARCH_TRIPLET}:$LD_LIBRARY_PATH
       QT_PLUGIN_PATH: $SNAP/usr/lib/${SNAPCRAFT_ARCH_TRIPLET}/qt5/plugins
@@ -58,7 +65,8 @@ apps:
       DEBIAN_FRONTEND: noninteractive
       DECONZ_WEB_PORT: 8087
       DECONZ_WS_PORT: 8088
-      DEBUG_INFO: 1
+      DEBUG_INFO: 2
+      DEBUG_ERROR: 2
       DEBUG_APS: 0
       DEBUG_ZCL: 0
       DEBUG_ZDP: 0
@@ -73,10 +81,10 @@ apps:
 plugs:
   conbeeii:
     interface: serial-port
-  system-files:
-    interface: system-files
-    read:
-      - /run/udev/data
+  # system-files:
+  #   interface: system-files
+  #   write:
+  #     - /dev
 
 slots:
   package-assets:
@@ -89,5 +97,13 @@ slots:
 layout:
   /usr/share/deCONZ/webapp:
     bind: $SNAP/usr/share/deCONZ/webapp
+  # /var/lock/LCK..serial_by-id_usb-dresden_elektronik_ingenieurtechnik_GmbH_ConBee_II_DE2219993-if00:
+  #   bind-file: $SNAP_DATA/var/lock/LCK..serial_by-id_usb-dresden_elektronik_ingenieurtechnik_GmbH_ConBee_II_DE2219993-if00
+  # /etc/locks:
+  #   bind: $SNAP_DATA/etc/locks
+  # /var/spool/locks:
+  #   bind: $SNAP_DATA/var/spool/locks
+  # /var/spool/uucp:
+  #   bind: $SNAP_DATA/var/spool/uucp
   # /usr/bin/GCFFlasher_internal:
   #   bind-file: $SNAP/usr/bin/GCFFlasher_internal

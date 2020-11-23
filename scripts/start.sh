@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -x
 # This software includes the marthoc/docker-deconz Docker Image: Copyright (c) 2018 Mark Coombes
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -25,13 +25,15 @@ echo "Web UI port: $DECONZ_WEB_PORT"
 echo "Websockets port: $DECONZ_WS_PORT"
 
 DECONZ_OPTS="--auto-connect=1 \
-        --dbg-info=$DEBUG_INFO \
-        --dbg-aps=$DEBUG_APS \
-        --dbg-zcl=$DEBUG_ZCL \
-        --dbg-zdp=$DEBUG_ZDP \
-        --dbg-otau=$DEBUG_OTAU \
-        --http-port=$DECONZ_WEB_PORT \
-        --ws-port=$DECONZ_WS_PORT"
+--dbg-info=$DEBUG_INFO \
+--dbg-error=$DEBUG_ERROR \
+--dbg-aps=$DEBUG_APS \
+--dbg-zcl=$DEBUG_ZCL \
+--dbg-zdp=$DEBUG_ZDP \
+--dbg-otau=$DEBUG_OTAU \
+--http-port=$DECONZ_WEB_PORT \
+--ws-port=$DECONZ_WS_PORT \
+--appdata=$SNAP_COMMON"
 
 if [ "$DECONZ_VNC_MODE" != 0 ]; then
   
@@ -65,7 +67,7 @@ else
 fi
 
 if [ "$DECONZ_DEVICE" != 0 ]; then
-  DECONZ_OPTS="$DECONZ_OPTS --device=$DECONZ_DEVICE"
+  DECONZ_OPTS="$DECONZ_OPTS --dev=$DECONZ_DEVICE"
 fi
 
 if [ "$DECONZ_UPNP" != 1 ]; then
