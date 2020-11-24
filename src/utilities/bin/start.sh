@@ -52,13 +52,13 @@ if [ "$DECONZ_VNC_ENABLED" = "true" ]; then
   DECONZ_VNC_DISPLAY=:$(($DECONZ_VNC_PORT - 5900))
   echo "VNC port: $DECONZ_VNC_PORT"
   
-  if [ ! -e /root/.vnc ]; then
-    mkdir /root/.vnc
+  if [ ! -e $HOME/.vnc ]; then
+    mkdir $HOME/.vnc
   fi
   
   # Set VNC password
-  echo "$DECONZ_VNC_PASSWORD" | tigervncpasswd -f > /root/.vnc/passwd
-  chmod 600 /root/.vnc/passwd
+  echo "$DECONZ_VNC_PASSWORD" | tigervncpasswd -f > $HOME/.vnc/passwd
+  chmod 600 $HOME/.vnc/passwd
 
   # Cleanup previous VNC session data
   tigervncserver -kill "$DECONZ_VNC_DISPLAY"
