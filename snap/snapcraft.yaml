@@ -51,8 +51,12 @@ parts:
     - sqlite3
     - tigervnc-standalone-server
     - tigervnc-common
+    - wmii
     - xfonts-base
     - xfonts-scalable
+    # For tigervnc
+    - perl-modules-5.26
+    - util-linux
     override-pull: |
       export DECONZ_VERSION=$(cat $SNAPCRAFT_STAGE/VERSION_DECONZ)
       wget -q -O- http://deconz.dresden-elektronik.de/ubuntu/stable/deconz-2.05.88-qt5.deb | dpkg -x - "$SNAPCRAFT_PART_SRC"
@@ -98,6 +102,7 @@ apps:
       DECONZ_VNC_PASSWORD: changeme
       DECONZ_VNC_PORT: 5900
       DECONZ_UPNP: 1
+      PERL5LIB: $SNAP/usr/share/perl/5.26:$SNAP/usr/lib/x86_64-linux-gnu/perl/5.26
 
 plugs:
   conbeeii:
