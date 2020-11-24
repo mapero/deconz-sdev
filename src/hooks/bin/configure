@@ -1,0 +1,22 @@
+#!/bin/sh
+
+# source the management script
+. "$SNAP/bin/deconz-mgnt"
+
+handle_vnc_enabled()
+{
+        vnc_enabled="$(vnc_enabled)"
+
+        # Validate vnc enabled
+        if ! expr "$vnc_enabled" : '^\(false\|true\)$' > /dev/null; then
+                echo "\"$vnc_enabled\" is not a valid value" >&2
+                return 1
+        fi
+
+       # run function from management script
+        set_vnc_enabled "$vnc_enabled"
+
+        # Restart example-server to apply new config
+        snapctl restart ctrlx-deconz.deconz
+}
+handle_vnc_enabled

@@ -60,14 +60,18 @@ parts:
     after:
     - configs
     - qtserialport
-  scripts:
-    source: ./scripts
+  hooks:
     plugin: dump
+    source: src/hooks/
     organize:
-      '*': bin/
+      bin/: snap/hooks/
+  scripts:
+    plugin: dump
+    source: src/utilities
+  
 
 apps:
-  deCONZ:
+  deconz:
     command: bin/start.sh
     daemon: simple
     plugs: 

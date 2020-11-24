@@ -19,6 +19,13 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+# source the management script
+. "$SNAP/bin/deconz-mgnt"
+
+# call the http_port function from the management script
+DECONZ_VNC_ENABLED="$(vnc_enabled)"
+export DECONZ_VNC_ENABLED
+
 echo "Starting deCONZ..."
 echo "Current deCONZ version: $DECONZ_VERSION"
 echo "Web UI port: $DECONZ_WEB_PORT"
@@ -35,7 +42,7 @@ DECONZ_OPTS="--auto-connect=1 \
 --ws-port=$DECONZ_WS_PORT \
 --appdata=$SNAP_COMMON"
 
-if [ "$DECONZ_VNC_MODE" != 0 ]; then
+if [ "$DECONZ_VNC_ENABLED" = "true" ]; then
   
   if [ "$DECONZ_VNC_PORT" -lt 5900 ]; then
     echo "ERROR - VNC port must be 5900 or greater!"
