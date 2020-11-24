@@ -35,3 +35,8 @@ The start.sh script is based on https://github.com/marthoc/docker-deconz all cre
 MIT
 
 Copyright 2020 Jochen Scheib
+
+## ToDo
+
+- [ ] Configuration of ports
+- [ ] COnfiguration of debug flags
