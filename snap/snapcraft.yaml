@@ -1,8 +1,9 @@
 name: ctrlx-deconz # you probably want to 'snapcraft register <name>'
+title: deCONZ
 base: core18 # the base snap is the execution environment for this snap
-summary: deconz # 79 char long summary
+summary: Control software for Zigbee networks # 79 char long summary
 description: |
-  deconz
+  deCONZ is an easy to use control software, with which you can set up and control Zigbee networks of any size without further programming effort.
 grade: devel # must be 'stable' to release into candidate/stable channels
 confinement: strict # use 'strict' once you have the right plugs and slots
 adopt-info: deconz
