@@ -49,25 +49,22 @@ if [ "$DECONZ_VNC_ENABLED" = "true" ]; then
     exit 1
   fi
 
-  DECONZ_VNC_DISPLAY=:$(($DECONZ_VNC_PORT - 5900))
   echo "VNC port: $DECONZ_VNC_PORT"
   
-  if [ ! -e $HOME/.vnc ]; then
-    mkdir $HOME/.vnc
-  fi
+  mkdir -p $HOME/.vnc
   
   # Set VNC password
-  echo "$DECONZ_VNC_PASSWORD" | tigervncpasswd -f > $HOME/.vnc/passwd
+  echo "$DECONZ_VNC_PASSWORD" | vncpasswd -f > $HOME/.vnc/passwd
   chmod 600 $HOME/.vnc/passwd
 
-  # Cleanup previous VNC session data
-  tigervncserver -kill "$DECONZ_VNC_DISPLAY"
-
-  # Set VNC security
-  tigervncserver -SecurityTypes VncAuth,TLSVnc "$DECONZ_VNC_DISPLAY"
+  if [ -z "$USER" ]; then
+    export USER=root
+  fi
   
+  XORGCONFIG=$SNAP/etc/X11 vncserver :2 -fp "/snap/ctrlx-deconz/current/usr/share/fonts/X11/misc/"
+
   # Export VNC display variable
-  export DISPLAY=$DECONZ_VNC_DISPLAY
+  export DISPLAY=:2
 else
   echo "VNC Disabled"
   DECONZ_OPTS="$DECONZ_OPTS -platform minimal"
