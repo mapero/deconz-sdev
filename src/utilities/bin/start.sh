@@ -43,28 +43,24 @@ DECONZ_OPTS="--auto-connect=1 \
 --appdata=$SNAP_COMMON"
 
 if [ "$DECONZ_VNC_ENABLED" = "true" ]; then
-  
-  if [ "$DECONZ_VNC_PORT" -lt 5900 ]; then
-    echo "ERROR - VNC port must be 5900 or greater!"
-    exit 1
-  fi
-
   echo "VNC port: $DECONZ_VNC_PORT"
+  #DECONZ_VNC_DISPLAY=:$(($DECONZ_VNC_PORT - 5900))
+  DECONZ_VNC_DISPLAY=:2
   
   mkdir -p $HOME/.vnc
   
   # Set VNC password
-  echo "$DECONZ_VNC_PASSWORD" | vncpasswd -f > $HOME/.vnc/passwd
+  echo "$DECONZ_VNC_PASSWORD" | tigervncpasswd -f > $HOME/.vnc/passwd
   chmod 600 $HOME/.vnc/passwd
 
-  if [ -z "$USER" ]; then
-    export USER=root
-  fi
-  
-  XORGCONFIG=$SNAP/etc/X11 vncserver :2 -fp "/snap/ctrlx-deconz/current/usr/share/fonts/X11/misc/"
+  # Cleanup previous VNC session data
+  tigervncserver -kill "$DECONZ_VNC_DISPLAY"
+
+  # Set VNC security
+  XORGCONFIG=$SNAP/etc/X11 tigervncserver -SecurityTypes VncAuth,TLSVnc -fp "/snap/ctrlx-deconz/current/usr/share/fonts/X11/misc/" "$DECONZ_VNC_DISPLAY"
 
   # Export VNC display variable
-  export DISPLAY=:2
+  export DISPLAY=$DECONZ_VNC_DISPLAY
 else
   echo "VNC Disabled"
   DECONZ_OPTS="$DECONZ_OPTS -platform minimal"
