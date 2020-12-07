@@ -6,9 +6,16 @@ description: |
   deCONZ is an easy to use control software, with which you can set up and control Zigbee networks of any size without further programming effort.
 grade: devel # must be 'stable' to release into candidate/stable channels
 confinement: strict # use 'strict' once you have the right plugs and slots
-adopt-info: deconz
+adopt-info: version
 
 parts:
+  version:
+    source: .
+    plugin: nil
+    override-stage: |
+      snapcraftctl set-version "$(cat $SNAPCRAFT_PRIME/VERSION_DECONZ)+$(date +%Y%m%d%H%M%S)"
+    after:
+    - deconz
   configs:
     source: ./configs
     plugin: dump
@@ -36,6 +43,7 @@ parts:
     source-type: deb
     build-packages:
       - wget
+      - xfonts-utils
     stage-packages:
     - qt5-default
     - curl
@@ -52,13 +60,19 @@ parts:
     # VNC
     - tightvncserver
     - xfonts-base
+    - xfonts-scalable
     # For tigervnc
     #- perl-modules-5.26
     #- util-linux
     override-pull: |
-      export DECONZ_VERSION=$(cat $SNAPCRAFT_STAGE/VERSION_DECONZ)
-      wget -q -O- http://deconz.dresden-elektronik.de/ubuntu/stable/deconz-2.05.88-qt5.deb | dpkg -x - "$SNAPCRAFT_PART_SRC"
-      snapcraftctl set-version "${DECONZ_VERSION}+$(date +%Y%m%d%H%M%S)"
+      wget -q -O- http://deconz.dresden-elektronik.de/ubuntu/stable/deconz-$(cat $SNAPCRAFT_STAGE/VERSION_DECONZ)-qt5.deb | dpkg -x - "$SNAPCRAFT_PART_SRC"
+    override-prime: |
+      set -x
+      snapcraftctl prime
+      mkfontdir usr/share/fonts/X11/misc/
+      cp -ar etc/X11/fonts/misc/xfonts-base.alias usr/share/fonts/X11/misc/fonts.alias
+      mkfontscale usr/share/fonts/X11/Type1/
+      mkfontdir usr/share/fonts/X11/Type1/
     after:
     - configs
     - qtserialport
@@ -89,8 +103,8 @@ apps:
       DEBIAN_FRONTEND: noninteractive
       DECONZ_WEB_PORT: 8087
       DECONZ_WS_PORT: 8088
-      DEBUG_INFO: 2
-      DEBUG_ERROR: 2
+      DEBUG_INFO: 1
+      DEBUG_ERROR: 1
       DEBUG_APS: 0
       DEBUG_ZCL: 0
       DEBUG_ZDP: 0

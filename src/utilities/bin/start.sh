@@ -25,6 +25,12 @@
 # call the http_port function from the management script
 DECONZ_VNC_ENABLED="$(vnc_enabled)"
 export DECONZ_VNC_ENABLED
+export FONTCONFIG_PATH=$SNAP/etc/fonts
+export QT_XKB_CONFIG_ROOT=$SNAP/usr/share/X11/xkb
+export XORGCONFIG=$SNAP/etc/X11
+
+mkdir -p $HOME/.run
+export XDG_RUNTIME_DIR=$HOME/.run
 
 echo "Starting deCONZ..."
 echo "Current deCONZ version: $DECONZ_VERSION"
@@ -61,7 +67,7 @@ if [ "$DECONZ_VNC_ENABLED" = "true" ]; then
     export USER=root
   fi
   
-  XORGCONFIG=$SNAP/etc/X11 vncserver :2 -fp "/snap/ctrlx-deconz/current/usr/share/fonts/X11/misc/"
+  vncserver :2 -fp "$SNAP/usr/share/fonts/X11/misc/,$SNAP/usr/share/fonts/X11/Type1"
 
   # Export VNC display variable
   export DISPLAY=:2
