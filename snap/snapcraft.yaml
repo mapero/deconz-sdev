@@ -67,7 +67,6 @@ parts:
     override-pull: |
       wget -q -O- http://deconz.dresden-elektronik.de/ubuntu/stable/deconz-$(cat $SNAPCRAFT_STAGE/VERSION_DECONZ)-qt5.deb | dpkg -x - "$SNAPCRAFT_PART_SRC"
     override-prime: |
-      set -x
       snapcraftctl prime
       mkfontdir usr/share/fonts/X11/misc/
       cp -ar etc/X11/fonts/misc/xfonts-base.alias usr/share/fonts/X11/misc/fonts.alias
