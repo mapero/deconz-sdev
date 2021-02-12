@@ -1,4 +1,4 @@
-name: ctrlx-deconz # you probably want to 'snapcraft register <name>'
+name: deconz-sdev # you probably want to 'snapcraft register <name>'
 title: deCONZ
 base: core18 # the base snap is the execution environment for this snap
 summary: Control software for Zigbee networks # 79 char long summary
