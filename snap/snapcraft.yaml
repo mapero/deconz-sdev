@@ -55,7 +55,7 @@ parts:
     - xfonts-scalable
     override-pull: |
       export DECONZ_VERSION=$(cat $SNAPCRAFT_STAGE/VERSION_DECONZ)
-      wget -q -O- http://deconz.dresden-elektronik.de/ubuntu/stable/deconz-2.05.88-qt5.deb | dpkg -x - "$SNAPCRAFT_PART_SRC"
+      wget -q -O- http://deconz.dresden-elektronik.de/ubuntu/stable/deconz-2.09.03-qt5.deb | dpkg -x - "$SNAPCRAFT_PART_SRC"
       snapcraftctl set-version "${DECONZ_VERSION}+$(date +%Y%m%d%H%M%S)"
     after:
     - configs
@@ -112,5 +112,9 @@ slots:
       - $SNAP/package-assets/${SNAPCRAFT_PROJECT_NAME}
 
 layout:
-  /usr/share/deCONZ/webapp:
-    bind: $SNAP/usr/share/deCONZ/webapp
+  /usr/bin/GCFFlasher_internal:
+    bind-file: $SNAP/usr/bin/GCFFlasher_internal
+  /usr/bin/GCFFlasher_internal.bin:
+    bind-file: $SNAP/usr/bin/GCFFlasher_internal.bin
+  /usr/share/deCONZ:
+    bind: $SNAP/usr/share/deCONZ

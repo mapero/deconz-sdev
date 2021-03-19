@@ -17,6 +17,6 @@ handle_vnc_enabled()
         set_vnc_enabled "$vnc_enabled"
 
         # Restart example-server to apply new config
-        snapctl restart ctrlx-deconz.deconz
+        snapctl restart deconz-sdev.deconz
 }
 handle_vnc_enabled
